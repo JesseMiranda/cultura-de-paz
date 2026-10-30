@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Estudio de casos: Cultura de Paz</title>
+<style>
+:root{--bg:#fffbf2;--card:#c7d2fe;--ink:#3b3f7f;--accent:#4467e0;--ok:#1f7a4d;--okbg:#d6f2e2;--bad:#b3261e;--badbg:#fbdcd9;--white:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14152b;--card:#2a2f63;--ink:#e4e7ff;--accent:#8fa5ff;--ok:#7be0a8;--okbg:#17402c;--bad:#ff9d96;--badbg:#4a1f1c;--white:#1d2047}}
+:root[data-theme="dark"]{--bg:#14152b;--card:#2a2f63;--ink:#e4e7ff;--accent:#8fa5ff;--ok:#7be0a8;--okbg:#17402c;--bad:#ff9d96;--badbg:#4a1f1c;--white:#1d2047}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;line-height:1.5}
+main{max-width:640px;margin:0 auto;padding:24px 18px 48px}
+h1{font-size:clamp(1.9rem,7vw,2.8rem);line-height:1.05;margin:8px 0 6px;font-weight:900;text-transform:uppercase;letter-spacing:-.01em;transform:rotate(-1.5deg)}
+.sub{margin:0 0 20px;opacity:.85}
+.bar{height:8px;background:var(--card);border-radius:99px;overflow:hidden;margin-bottom:6px}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.count{font-size:.9rem;opacity:.8;margin-bottom:14px}
+.card{background:var(--card);border-radius:22px;padding:22px}
+.case{font-weight:800;margin:0 0 6px}
+.q{font-size:1.15rem;font-weight:700;margin:0 0 16px}
+.opt{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:var(--white);border:2px solid transparent;border-radius:14px;padding:12px 14px;margin-bottom:10px;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:focus-visible,.btn:focus-visible,.hintbtn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.opt.ok{background:var(--okbg);border-color:var(--ok)}
+.opt.bad{background:var(--badbg);border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.hintbtn{background:none;border:0;color:var(--ink);text-decoration:underline;font:inherit;cursor:pointer;padding:4px 0;margin-bottom:10px}
+.hint{font-style:italic;margin:0 0 12px}
+.fb{margin-top:6px;padding:12px 14px;border-radius:14px;background:var(--white)}
+.fb b{display:block;margin-bottom:2px}
+.btn{margin-top:16px;background:var(--accent);color:#fff;border:0;border-radius:99px;padding:12px 24px;font:inherit;font-weight:800;cursor:pointer}
+:root[data-theme="dark"] .btn,:root:not([data-theme="light"]) .btn{color:#14152b}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .btn{color:#fff}}
+.score{font-size:3rem;font-weight:900;margin:0}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+<h1>Estudio de casos</h1>
+<p class="sub">Cultura de paz: identifica la violencia y busca soluciones.</p>
+<div class="bar"><i id="prog"></i></div>
+<div class="count" id="count"></div>
+<section class="card" id="quiz" aria-live="polite"></section>
+<section class="card" id="end" hidden>
+<p class="score" id="score"></p>
+<p id="msg"></p>
+<button class="btn" id="again">Volver a jugar</button>
+</section>
+</main>
+<script>
+var Q=[
+{c:"Caso 1: El control disfrazado de amor",q:"Una chica se enoja si su novio no responde rápido, quiere saber constantemente su ubicación y recibe el sueldo de él para las compras. ¿Qué tipo de violencia predomina?",o:["Violencia de control y violencia económica en la pareja","Solo una discusión normal de pareja","Violencia política","No hay ningún tipo de violencia"],a:0,h:"Piensa en quién decide sobre el dinero y la libertad del otro.",e:"Vigilar la ubicación constantemente y controlar el dinero de la pareja son formas de control y violencia económica, aunque se justifiquen como “amor”."},
+{c:"Caso 1: El control disfrazado de amor",q:"Ella a veces lo pellizca cuando algo le incomoda y están en público. ¿Eso qué es?",o:["Una broma sin importancia","Violencia física, aunque parezca leve","Una muestra de cariño","Algo que solo importa si deja marca"],a:1,h:"No hace falta que deje moretones para ser violencia.",e:"Cualquier agresión física, aunque sea pequeña, es violencia. Además, puede ejercerla cualquier persona, sin importar su género."},
+{c:"Caso 1: El control disfrazado de amor",q:"¿Cuál de estas acciones sería una solución desde la cultura de paz?",o:["Aguantar para no perder la relación","Vengarse haciendo lo mismo","Hablar con confianza y respeto, poner límites y buscar ayuda si es necesario","Ignorar el problema hasta que pase"],a:2,h:"La paz se construye con respeto y comunicación.",e:"La cultura de paz promueve el diálogo, el respeto, la confianza y los límites sanos. Pedir apoyo a alguien de confianza o a un profesional también es parte de la solución."},
+{c:"Caso 2: El compañero invisible",q:"Un grupo no deja participar a un compañero en los trabajos porque dicen que “no hace bien el trabajo”. ¿Qué tipo de violencia hay?",o:["Violencia física","Exclusión y violencia psicológica o social","Violencia económica","Ninguna, es decisión del grupo"],a:1,h:"No hay golpes, pero sí daño emocional.",e:"Dejar solo a alguien y negarle oportunidades de integrarse es exclusión social, que daña su autoestima y su bienestar emocional."},
+{c:"Caso 2: El compañero invisible",q:"¿Cuál sería la mejor forma de resolver este caso con cultura de paz?",o:["Seguir excluyéndolo hasta que mejore","Burlarse de sus errores para que aprenda","Que él se quede callado y trabaje solo","Incluirlo, repartir tareas según sus fortalezas y apoyarlo para aprender"],a:3,h:"Piensa en empatía e inclusión.",e:"La inclusión, la empatía y el trabajo en equipo permiten que todos aporten y crezcan. Todas las personas merecen una oportunidad."},
+{c:"Caso 2: El compañero invisible",q:"Si ves que a un compañero lo dejan solo y lo excluyen, ¿qué puedes hacer tú?",o:["Nada, no es mi problema","Reírme con el grupo para encajar","Acercarme, invitarlo a participar y hablar con el grupo sobre el respeto","Grabarlo y publicarlo"],a:2,h:"Los pequeños gestos cuentan.",e:"No quedarte callado ante la exclusión es clave en la cultura de paz. Un pequeño gesto puede cambiar el día de alguien."}
+];
+var i=0,s=0,box=document.getElementById("quiz");
+function $(id){return document.getElementById(id)}
+function show(){
+ var d=Q[i];
+ $("prog").style.width=(i/Q.length*100)+"%";
+ $("count").textContent="Pregunta "+(i+1)+" de "+Q.length;
+ box.innerHTML="";
+ var c=document.createElement("p");c.className="case";c.textContent=d.c;box.appendChild(c);
+ var q=document.createElement("p");q.className="q";q.textContent=d.q;box.appendChild(q);
+ var hb=document.createElement("button");hb.className="hintbtn";hb.textContent="Ver pista";
+ var hp=document.createElement("p");hp.className="hint";hp.textContent=d.h;hp.hidden=true;
+ hb.onclick=function(){hp.hidden=false;hb.hidden=true};
+ box.appendChild(hb);box.appendChild(hp);
+ var btns=[];
+ d.o.forEach(function(t,k){
+  var b=document.createElement("button");b.className="opt";b.textContent=t;
+  b.onclick=function(){pick(k,btns,d,hb,hp)};
+  btns.push(b);box.appendChild(b);
+ });
+}
+function pick(k,btns,d,hb,hp){
+ btns.forEach(function(b,j){b.disabled=true;if(j===d.a)b.classList.add("ok")});
+ var good=k===d.a;
+ if(good)s++;else btns[k].classList.add("bad");
+ hb.hidden=true;hp.hidden=true;
+ var f=document.createElement("div");f.className="fb";
+ var t=document.createElement("b");t.textContent=good?"¡Correcto!":"Casi.";
+ f.appendChild(t);f.appendChild(document.createTextNode(d.e));
+ box.appendChild(f);
+ var n=document.createElement("button");n.className="btn";
+ n.textContent=i<Q.length-1?"Siguiente":"Ver resultado";
+ n.onclick=function(){i++;if(i<Q.length)show();else finish()};
+ box.appendChild(n);n.focus();
+}
+function finish(){
+ box.hidden=true;$("end").hidden=false;$("prog").style.width="100%";
+ $("count").textContent="Quiz terminado";
+ $("score").textContent=s+" / "+Q.length;
+ $("msg").textContent=s>=5?"¡Excelente! Eres un agente de paz.":s>=3?"¡Buen trabajo! Comenta las respuestas con tu grupo.":"Gracias por participar. Revisen juntos los casos y conversen qué harían distinto.";
+}
+$("again").onclick=function(){i=0;s=0;$("end").hidden=true;box.hidden=false;show()};
+show();
+</script>
+</body>
+</html>
